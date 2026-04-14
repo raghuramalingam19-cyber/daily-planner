@@ -6,7 +6,7 @@ function App() {
   const [taskName, setTaskName] = useState("");
   const [dueDate, setDueDate] = useState("");
 
-  const API = "http://localhost:8000";
+  const API = "https://daily-planner-backend-tfir.onrender.com";
 
   useEffect(() => { fetchTasks(); }, []);
 
