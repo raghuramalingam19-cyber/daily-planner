@@ -9,7 +9,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -24,6 +24,10 @@ class Task(BaseModel):
 
 class UpdateTask(BaseModel):
     completed: bool
+
+class EditTask(BaseModel):
+    task: str
+    due_date: Optional[str] = None
 
 @app.get("/")
 def home():
@@ -52,6 +56,14 @@ def update_task(task_id: str, update: UpdateTask):
         {"$set": {"completed": update.completed}}
     )
     return {"message": "Task updated"}
+
+@app.put("/edit-task/{task_id}")
+def edit_task(task_id: str, edit: EditTask):
+    tasks_collection.update_one(
+        {"_id": ObjectId(task_id)},
+        {"$set": {"task": edit.task, "due_date": edit.due_date}}
+    )
+    return {"message": "Task edited"}
 
 @app.delete("/delete-task/{task_id}")
 def delete_task(task_id: str):
